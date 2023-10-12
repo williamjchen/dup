@@ -4,7 +4,7 @@ import (
 	"log/slog"
 
 	tea "github.com/charmbracelet/bubbletea"
-    "github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/ssh"
 )
 
 type (
@@ -19,51 +19,50 @@ const (
 )
 
 type commonModel struct {
-	choices  []string           // items on the to-do list
-    choice string
-	chosen bool
-	begin bool
-	srv *Server
-	sess ssh.Session
+	choices []string // items on the to-do list
+	choice  string
+	chosen  bool
+	begin   bool
+	srv     *Server
+	sess    ssh.Session
 	program *tea.Program
 }
 type parentModel struct {
-	state state
+	state  state
 	common *commonModel
-	menu *menuModel
-	game *gameModel
+	menu   *menuModel
+	game   *gameModel
 }
 
 func GetModelOption(s ssh.Session, options []string, server *Server, sess ssh.Session) {
 	model := Model(options, server, sess)
-    p := tea.NewProgram(
-        model,
-        tea.WithInput(s),
-        tea.WithOutput(s),
-    )
+	p := tea.NewProgram(
+		model,
+		tea.WithInput(s),
+		tea.WithOutput(s),
+	)
 	model.common.program = p
-    _, err := p.Run()
-    if err != nil {
-        slog.Error("failed to run menu", err)
-        return
-    }
+	_, err := p.Run()
+	if err != nil {
+		slog.Error("failed to run menu", err)
+		return
+	}
 }
 
 func Model(options []string, server *Server, sess ssh.Session) *parentModel {
-	common := commonModel {
+	common := commonModel{
 		choices: options,
-		choice: "",
-		chosen: false,
-		begin: false,
-		srv: server,
-		sess: sess,
+		choice:  "",
+		chosen:  false,
+		begin:   false,
+		srv:     server,
+		sess:    sess,
 	}
-
 
 	p := parentModel{
 		common: &common,
-		menu: NewMenu(&common),
-		game: NewGame(&common),
+		menu:   NewMenu(&common),
+		game:   NewGame(&common),
 	}
 
 	return &p
@@ -76,11 +75,10 @@ func (m *parentModel) Init() tea.Cmd {
 func (m *parentModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		var cmd tea.Cmd
-		k := msg.String()
-		if k == "esc" || k == "ctrl+c" {
-			cmd = tea.Quit
-			return m, cmd
-		} else if k == "ctrl+n" {
+		switch msg.String() {
+		case "esc", "ctrl+c":
+			return m, tea.Quit
+		case "ctrl+n":
 			return m, cmd
 		}
 	}
@@ -90,7 +88,7 @@ func (m *parentModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		slog.Info("change size", "width", msg.Width, "height", msg.Height)
 	}
 
-	switch m.state{
+	switch m.state {
 	case showMenu:
 		men, cmd := m.menu.Update(msg)
 		m.menu = men.(*menuModel)
@@ -107,7 +105,7 @@ func (m *parentModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *parentModel) View() string {
-	switch m.state{
+	switch m.state {
 	case showMenu:
 		return m.menu.View()
 	case showGame:
