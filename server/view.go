@@ -90,12 +90,16 @@ func (m *parentModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch m.state {
 	case showMenu:
+		var cmd2 tea.Cmd
 		men, cmd := m.menu.Update(msg)
 		m.menu = men.(*menuModel)
 		if m.common.chosen {
 			m.state = showGame
+			var g tea.Model
+			g, cmd2 = m.game.Update(msg)
+			m.game = g.(*gameModel)
 		}
-		return m, cmd
+		return m, tea.Batch(cmd, cmd2)
 	case showGame:
 		g, cmd := m.game.Update(msg)
 		m.game = g.(*gameModel)

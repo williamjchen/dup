@@ -26,7 +26,7 @@ func (m *gameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch m.common.choice {
 	case m.common.choices[1]: // join
-		//m.join = NewJoinModel(m.common)
+		// m.join = NewJoinModel(m.common)
 		if !m.join.idInput.Focused() {
 			cmd = tea.Batch(m.join.idInput.Cursor.SetMode(cursor.CursorBlink),
 				m.join.idInput.Focus(),
