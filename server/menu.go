@@ -12,7 +12,7 @@ type menuModel struct {
 }
 
 func NewMenu(com *commonModel) *menuModel {
-	m := menuModel {
+	m := menuModel{
 		common: com,
 	}
 	return &m
@@ -51,8 +51,6 @@ func (m *menuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-
-
 func (m *menuModel) View() string {
 	s := strings.Builder{}
 	s.WriteString("What chess mode would you like to play?\n\n")
@@ -70,3 +68,4 @@ func (m *menuModel) View() string {
 
 	return s.String()
 }
+

@@ -1,27 +1,27 @@
 package server
 
 import (
-	"fmt"
-	"os"
-	"errors"
-	"log/slog"
 	"context"
-	"time"
+	"errors"
+	"fmt"
+	"log/slog"
+	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/wish"
 )
 
 type Server struct {
 	host string
 	path string
 	port int
-	srv *ssh.Server
+	srv  *ssh.Server
 }
 
-func NewServer(path, host string, port int) (*Server, error){
+func NewServer(path, host string, port int) (*Server, error) {
 	server := Server{
 		host: host,
 		path: path,
@@ -45,7 +45,6 @@ func NewServer(path, host string, port int) (*Server, error){
 func (s *Server) Start() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
 
 	slog.Info("Starting SSH server", "host", s.host, "port", s.port)
 	go func() {

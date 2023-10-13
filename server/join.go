@@ -2,15 +2,16 @@ package server
 
 import (
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type joinModel struct {
-	common *commonModel
+	common  *commonModel
 	idInput textinput.Model
-	tried bool
+	tried   bool
 }
 
 func NewJoinModel(com *commonModel) *joinModel {
@@ -19,38 +20,33 @@ func NewJoinModel(com *commonModel) *joinModel {
 	ii.CharLimit = 6
 	ii.Width = 20
 
-	j := joinModel {
-		common: com,
+	j := joinModel{
+		common:  com,
 		idInput: ii,
-		tried: false,
+		tried:   false,
 	}
 
 	return &j
 }
 
 func (m joinModel) Init() tea.Cmd {
-    return nil
+	m.idInput.Cursor.BlinkSpeed = time.Second
+	return nil
 }
 
 func (m *joinModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmds []tea.Cmd
 	var cmd tea.Cmd
-
-	cmds = append(cmds, m.idInput.Focus())
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String(){
+		switch msg.String() {
 		case "enter":
 			m.idInput.Reset()
-			return m, nil
-		default:
-			m.idInput, cmd = m.idInput.Update(msg)
 			return m, cmd
-		} // switch KeyMsg
+		}
+	}
 
-	} // switch msg
-	return m, nil
+	m.idInput, cmd = m.idInput.Update(msg)
+	return m, cmd
 }
 
 func (m *joinModel) View() string {
