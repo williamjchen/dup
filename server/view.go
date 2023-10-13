@@ -34,7 +34,7 @@ type parentModel struct {
 	game   *gameModel
 }
 
-func GetModelOption(s ssh.Session, options []string, server *Server, sess ssh.Session) {
+func GetModelOption(s ssh.Session, options []string, server *Server, sess ssh.Session) *tea.Program {
 	model := Model(options, server, sess)
 	p := tea.NewProgram(
 		model,
@@ -42,11 +42,7 @@ func GetModelOption(s ssh.Session, options []string, server *Server, sess ssh.Se
 		tea.WithOutput(s),
 	)
 	model.common.program = p
-	_, err := p.Run()
-	if err != nil {
-		slog.Error("failed to run menu", err)
-		return
-	}
+	return p
 }
 
 func Model(options []string, server *Server, sess ssh.Session) *parentModel {
