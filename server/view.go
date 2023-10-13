@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/ssh"
 )
 
@@ -107,9 +108,9 @@ func (m *parentModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m *parentModel) View() string {
 	switch m.state {
 	case showMenu:
-		return m.menu.View()
+		return lipgloss.NewStyle().Foreground(lipgloss.ANSIColor(21)).Render(m.menu.View())
 	case showGame:
-		return m.game.View()
+		return lipgloss.NewStyle().Foreground(lipgloss.ANSIColor(21)).Render(m.game.View())
 	}
 	return ""
 }

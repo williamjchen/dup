@@ -11,4 +11,3 @@ func main() {
 	}
 	s.Start()
 }
-

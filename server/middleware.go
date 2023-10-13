@@ -5,16 +5,18 @@ import (
 	// tea "github.com/charmbracelet/bubbletea"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
+	"github.com/muesli/termenv"
 )
 
 func tui(server *Server) wish.Middleware {
 	return func(sh ssh.Handler) ssh.Handler {
+		lipgloss.SetColorProfile(termenv.ANSI256)
 		return func(s ssh.Session) {
 			slog.Info("middlware")
-
 			options := []string{"Stockfish", "Join Room", "Create Room"}
 			p := GetModelOption(s, options, server, s)
 			if p != nil {
@@ -34,6 +36,7 @@ func tui(server *Server) wish.Middleware {
 						}
 					}
 				}()
+
 				if _, err := p.Run(); err != nil {
 					log.Error("app exit with error", "error", err)
 				}
